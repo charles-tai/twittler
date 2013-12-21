@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- javascript -->
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="moment-with-langs.js"></script>
+    <!-- css -->
+    <link rel="stylesheet" href="style.css" type="text/css" media="screen, print"/>
+    <link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy' rel='stylesheet' type='text/css'>
   </head>
-  <body>
+  <body background="questEnd.jpg">
     <script>
 
       $(document).ready(function(){
@@ -13,48 +18,64 @@
         //initial tweets
 
         var $divTweets = $( 'div.tweets' )
-        var index = streams.home.length - 1;
-        var count = 0;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.html('@' + tweet.user + ': ' + tweet.message + '\</br\>' +" date created: " + tweet.created_at);
+            , totalTweets = streams.home.length - 1
+            , count = 0;
+
+        while(totalTweets >= 0){
+          var tweet = streams.home[totalTweets];
+          var $tweet = $('<div id = \'messages\'></div>');
+          $tweet.html(
+                '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
+                '<span id = \'handle\'> @' + tweet.user  + '</span>' +
+                '</br>' + tweet.message +
+                '</br> date created: ' +
+                '<b> tweet #:' + count + '</p>'
+                );
           $tweet.appendTo($divTweets);
-          index -= 1;
+          totalTweets -= 1;
           count++;
         }
 
         //display new tweets
-        var previousIndex = count;
+        var index = count;
 
-        $('button.new').on('click', function() {
-          var index = streams.home.length-1;
-          console.log('index:' + index);
-          console.log('previousIndex:' + previousIndex );
+        $('div#button').on('click', function() {
 
-          while(index >= previousIndex) {
-            var tweet = streams.home[index];
-            var $newTweet = $('<div id = \'toggle\'></div>');
-            $newTweet.html('@' + tweet.user + ': ' + tweet.message + '\n date created: ' + tweet.created_at + '<b> tweet #:' + index);
-            $newTweet.prependTo($('div.newTweet')).effect('highlight',{color:'#F4E9C9'}, 10000);
-            index--;
-            count++;
+          var totalTweets = streams.home.length-1;
+          console.log('totalTweets:' + totalTweets);
+          console.log('index:' + index );
+          while(index <= totalTweets) {
+
+            var tweet = streams.home[index]
+                , createdAt =  tweet.created_at.getHours()
+                // , timeAgo = moment().startOf(createdAt).fromNow()
+                , $newTweet = $('<div id = \'messages\'></div>');
+
+            $newTweet.html(
+                '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
+                '<span id = \'handle\'> @' + tweet.user  + '</span>' +
+                '</br>' + tweet.message +
+                '</br> : ' +
+                '<b> tweet #:' + index + '</p>'
+                );
+            $newTweet.prependTo($('div.newTweet')).effect('highlight',{color:'#F4E9C9'}, 20000);
+            index++;
           }
             console.log('count: ' + count);
-            previousIndex = count;
         })
 
-        setInterval(function () {numOfTweets(streams.home.length-count)},1000);
+        setInterval(function () {numOfTweets(streams.home.length-index)},1000);
       });
+
       function numOfTweets (count) {
-        $('div.numOfTweets').text('new message: ' + count);
+        $('div#button').html('<div id = \'button\'>new message: ' + count + '</div').slideDown('slow');
       }
 
 
 
     </script>
 
-    <button type = 'button' class = 'new'> new tweets </button>
+    <div id = 'button'></div>
     <div class = 'numOfTweets'> </div>
     <div class = 'newTweet'></div>
     <div class = 'tweets'></div>

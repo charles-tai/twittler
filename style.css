@@ -1,5 +1,5 @@
 
-p {
+* {
   font-family: 'Sorts Mill Goudy', serif;
 }
 
@@ -8,13 +8,14 @@ p {
   font-weight: 900;
 }
 
-#handle {
+#light {
   font-size: small;
-  color: #a8a8a8;
+  color: #767676;
   font-weight: lighter;
 }
 
 div #messages {
+  font-weight: lighter;
   width: 300px;
   padding: 20px;
   margin: 3px;
@@ -29,6 +30,12 @@ div #button {
   background-color:rgba(255,0,0,0.5);
 }
 
+#userTweet {
+  width: 300px;
+  padding: 20px;
+  margin: auto;
+  background-color:rgba(145,181,45,0.5);
+}
 
 
 /** {

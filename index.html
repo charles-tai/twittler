@@ -5,7 +5,7 @@
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="moment-with-langs.js"></script>
+    <script src="jquery.timeago.js" type="text/javascript"></script>
     <!-- css -->
     <link rel="stylesheet" href="style.css" type="text/css" media="screen, print"/>
     <link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy' rel='stylesheet' type='text/css'>
@@ -19,24 +19,25 @@
 
         var $divTweets = $( 'div.tweets' )
             , totalTweets = streams.home.length - 1
-            , count = 0;
+            , count = 0
+            , vistor = 'Guest';
 
         while(totalTweets >= 0){
           var tweet = streams.home[totalTweets];
           var $tweet = $('<div id = \'messages\'></div>');
           $tweet.html(
                 '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
-                '<span id = \'handle\'> @' + tweet.user  + '</span>' +
+                '<span id = \'light\'> @' + tweet.user  + '</span>' +
                 '</br>' + tweet.message +
-                '</br> date created: ' +
-                '<b> tweet #:' + count + '</p>'
+                '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>' +
+                '<br /> <b> tweet #:' + count + '</p>'
                 );
           $tweet.appendTo($divTweets);
           totalTweets -= 1;
           count++;
         }
 
-        //display new tweets
+//// Display new tweets
         var index = count;
 
         $('div#button').on('click', function() {
@@ -53,28 +54,68 @@
 
             $newTweet.html(
                 '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
-                '<span id = \'handle\'> @' + tweet.user  + '</span>' +
-                '</br>' + tweet.message +
-                '</br> : ' +
-                '<b> tweet #:' + index + '</p>'
+                '<span id = \'light\'> @' + tweet.user  + '</span>' +
+                '<br />' + tweet.message +
+                '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>' +
+                '<br /> <b> tweet #:' + index + '</p>'
                 );
-            $newTweet.prependTo($('div.newTweet')).effect('highlight',{color:'#F4E9C9'}, 20000);
+            $newTweet.prependTo($('div.newTweet')).effect('highlight',{color:'#F4E9C9'}, 9000);
             index++;
           }
             console.log('count: ' + count);
         })
 
+//// Display user tweets
+
+        $('#userName').on('click', function() {
+          var userName = $(this).text();
+          var totalTweets = streams.home.length-1;
+
+
+          streams.users[userName].forEach( function (tweet) {
+            var $userTweet = $('<div id = \'userTweet\'></div>');
+            $userTweet.html(
+                '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
+                '<span id = \'handle\'> @' + tweet.user  + '</span>' +
+                '<br />' + tweet.message +
+                '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>'
+                );
+            $userTweet.prependTo($('#userTweet')).effect('highlight',{color:'#60781e'}, 20000);
+          });
+        })
+
+//// Send tweets
+
+      var currentUser;
+      if (currentUser == undefined) {
+         $('input').focus(function () {
+        })
+
+      };
+
+      $(":button[name='sendTweet']").click(function () {
+        var message = $('input').val();
+        writeTweet(message);
+      });
+
         setInterval(function () {numOfTweets(streams.home.length-index)},1000);
       });
 
       function numOfTweets (count) {
-        $('div#button').html('<div id = \'button\'>new message: ' + count + '</div').slideDown('slow');
+        $('div#button').html('<div id = \'button\'><b>' + count + '<strong> new messages </strong>').slideDown('slow');
       }
 
 
 
-    </script>
 
+    </script>
+    <form>
+      Tweet:
+      <input type = 'text' name = 'sendTweet'> </input>
+      <button type = 'button' name = 'sendTweet'>Send Tweet</button>
+    </form>
+
+    <div id = 'userTweet'>hello bitches</div>
     <div id = 'button'></div>
     <div class = 'numOfTweets'> </div>
     <div class = 'newTweet'></div>

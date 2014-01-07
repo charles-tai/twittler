@@ -3,6 +3,12 @@
   font-family: 'Sorts Mill Goudy', serif;
 }
 
+body {
+  background-image:url('twitterbkg.jpg');
+  background-repeat:no-repeat;
+  background-attachment:fixed;
+}
+
 #userName {
   font-size: large;
   font-weight: 900;
@@ -18,26 +24,41 @@ div #messages {
   font-weight: lighter;
   width: 300px;
   padding: 20px;
-  margin: 3px;
-  background-color:rgba(244,244,201,0.5);
+  margin: auto;
+  background-color:rgba(255,250,250,0.5);
+}
+
+div #messages:hover {
+  background-color:rgba(255,250,250,0.7)
 }
 
 div #button {
   height: 70px;
   width: 300px;
   padding: 20px;
-  margin: 3px;
-  background-color:rgba(255,0,0,0.5);
+  margin: auto;
+  background-color:rgba(255,220,64,0.8);
 }
+
 
 #userTweet {
-  width: 300px;
+  font-weight: lighter;
+  width: 280px;
   padding: 20px;
-  margin: auto;
-  background-color:rgba(145,181,45,0.5);
+  float: left;
 }
 
+#userName:hover {
+  background-color:rgba(25,250,250,0.5)
+}
 
-/** {
+#newTweet {
+  width: 400px;
+  padding: 20px;
+  margin: auto;
+}
+
+/*
+* {
    border: 1px solid red !important;
 }**/

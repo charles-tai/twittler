@@ -5,7 +5,7 @@
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-    <script src="jquery.timeago.js" type="text/javascript"></script>
+    <script src="jquery.timeago.js"></script>
     <!-- css -->
     <link rel="stylesheet" href="style.css" type="text/css" media="screen, print"/>
     <link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy' rel='stylesheet' type='text/css'>
@@ -15,85 +15,101 @@
 
 $(document).ready(function(){
 
-    var totalTweets = streams.home.length - 1
-        , index = 0;
+  var index = 0;
 
-    displayTweets();
+  // Displays all available tweets inside streams.home onto center column, #newTweet.
 
-    function displayTweets() {
+  var displayTweets = function () {
 
-      var totalTweets = streams.home.length-1;
+    var totalTweets = streams.home.length-1;
 
-      while(index <= totalTweets) {
-        var tweet = streams.home[index]
-            , createdAt =  tweet.created_at.getHours()
-            , $newTweet = $('<div id = \'messages\'></div>');
+    while(index <= totalTweets) {
+      var tweet = streams.home[index];
+      var createdAt =  tweet.created_at.getHours();
+      var $newTweet = $('<div id = \'messages\'></div>');
 
-        $newTweet.html(
-            '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
-            '<span id = \'light\'> @' + tweet.user  + '</span>' +
-            '<br />' + tweet.message +
-            '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>' +
-            '<br /> <b> tweet #:' + index + '</p>'
-            );
-        $newTweet.prependTo($('#newTweet')).effect('highlight',{color:'#FFFFCC'}, 1000);
-        index++;
-      }
+      $newTweet.html(
+        '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
+        '<span id = \'light\'> @' + tweet.user  + '</span>' +
+        '<br />' + tweet.message +
+        '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>' +
+        '<br /> <b> tweet #:' + index + '</p>'
+        );
+      $newTweet.prependTo($('.rightDiv')).effect('highlight',{color:'#FFFFCC'}, 2000);
+      index++;
     }
+  }
 
-//// Show new tweets
+  displayTweets();
 
-    $('div#button').on('click', function() {
-      displayTweets();
+  // Event handler that displays tweets on click.
+  $('div#button').on('click', function() {
+    displayTweets();
+  });
+
+  // Shows number of new tweets available in streams.home
+
+  var numOfTweets = function (count) {
+    $('div#button').html('<div id = \'button\'><b>' + count + '<strong> new messages </strong>').slideDown('slow');
+  };
+
+  // Updates number of new tweets available every 1000ms
+
+  setInterval(function () {numOfTweets(streams.home.length-index)},1000);
+  });
+
+  // Empties right column, #userTweet, then displays inputted user's tweets.
+
+  var displayUser = function (userName) {
+
+    var totalTweets = streams.home.length-1;
+
+    $('.leftDiv').empty();
+
+    streams.users[userName].forEach( function (tweet) {
+      var $userTweet = $('<div id = \'userTweet\'></div>');
+      $userTweet.html(
+          '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
+          '<span id = \'handle\'> @' + tweet.user  + '</span>' +
+          '<br />' + tweet.message +
+          '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>'
+          );
+      $userTweet.prependTo($('.leftDiv')).effect('highlight',{color:'#FFFFCC'}, 1000);
     });
+  }
 
-    setInterval(function () {numOfTweets(streams.home.length-index)},1000);
-    });
+  // Event handler that displays a specific user's tweets after clicking his name.
 
-    function numOfTweets (count) {
-      $('div#button').html('<div id = \'button\'><b>' + count + '<strong> new messages </strong>').slideDown('slow');
-    };
+  $(document).on('click', '#userName', function() {
+    var userName = $(this).text();
+    displayUser(userName);
+  });
 
-//// Display user tweets
+  // Sends tweets
 
-      $(document).on('click', '#userName', function() {
-        var userName = $(this).text();
-        var totalTweets = streams.home.length-1;
-        $('#userTweet').empty();
-        $('#userTweetName').html(userName);
-        streams.users[userName].forEach( function (tweet) {
-          var $userTweet = $('<div id = \'userTweet\'></div>');
-          $userTweet.html(
-              '<p> <span id = \'userName\'>' + tweet.user + '</span>' +
-              '<span id = \'handle\'> @' + tweet.user  + '</span>' +
-              '<br />' + tweet.message +
-              '<br /><span id = \'light\'> ' + $.timeago(tweet.created_at) + '</span>'
-              );
-          $userTweet.prependTo($('#userTweet')).effect('highlight',{color:'#FFFFCC'}, 1000);;
-        });
-      });
+  $(":button").on('click', function () {
+    var message = $('textarea').val();
+    alert('hello');
+    // writeTweet(message);
+  });
 
-
-//// Send tweets
-
-      $(":button").on('click', function () {
-        var message = $('input').val();
-        alert('hello');
-        // writeTweet(message);
-      });
+  $('#userTweet').hover( function () {
+    $('#userTweet').css('background-color','red');
+  });
 
 
     </script>
-    <form>
-      Tweet:
-      <input type = 'text' name = 'sendTweet'> </input>
-      <button type = "button"> Send Tweet </button>
-    </form>
 
-    <div id = 'userTweet'><div id = 'userTweetName'></div></div>
+    <div class = 'leftDiv'><div id = 'userTweetName'></div></div>
     <div id = 'button'></div>
     <div class = 'numOfTweets'> </div>
-    <div id = 'newTweet'></div>
+    <div class = 'veryRight'>
+      <form>
+        <textarea name = 'sendTweet' placeholder = "Say something!" cols="30" rows="5"> </textarea>
+        <button type = "button"> Twit </button>
+      </form>
+    </div>
+    <div class = 'rightDiv'></div>
 
   </body>
 
